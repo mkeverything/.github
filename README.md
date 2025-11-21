@@ -1,1 +1,1 @@
-landing page of [mkcode](https://mkcode.org) organization
+landing page of [mkeverything](https://mkeverything.org) organization
