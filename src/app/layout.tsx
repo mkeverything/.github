@@ -20,6 +20,6 @@ const TurboPascal = localFont({
 })
 
 export const metadata: Metadata = {
-	title: 'mkcode',
+	title: 'mkeverything',
 	description: 'mk means make',
 }
