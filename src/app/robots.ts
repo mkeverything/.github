@@ -1,6 +1,6 @@
 import type { MetadataRoute } from 'next'
 
-const siteUrl = 'https://mkeverything.org'
+const siteUrl = 'https://mkeverything.com'
 
 export const dynamic = 'force-static'
 

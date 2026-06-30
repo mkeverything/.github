@@ -1,6 +1,6 @@
 'use client'
 
-import { FormEvent, KeyboardEvent as ReactKeyboardEvent, ReactNode, useEffect, useRef, useState, useSyncExternalStore } from 'react'
+import { FormEvent, KeyboardEvent as ReactKeyboardEvent, ReactNode, useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore } from 'react'
 import Link from 'next/link'
 import '../styles/globals.css'
 
@@ -35,14 +35,14 @@ type Project = {
 const projects: Project[] = [
 	{
 		name: 'mktour.org',
-		description: 'chess tournament manager app for clubs with real users. works fast, stays in sync and much more',
-		ruDescription: 'приложение для проведения шахматных турниров. работает быстро и понятно. есть реальные пользователи',
+		description: 'real-time chess tournament manager web app for clubs with real users. works fast, stays in sync and much more',
+		ruDescription: 'веб-приложение для проведения шахматных турниров в реальном времени. работает быстро и понятно. есть реальные пользователи',
 		href: 'https://mktour.org',
 	},
 	{
 		name: 'radioznb.ru',
-		description: 'infrastructure for an amateur radio station: streaming with hand-drawn ui',
-		ruDescription: 'инфраструктура для любительской радиостанции: стриминг-платформа с интерфейсом, нарисованным от руки',
+		description: 'streaming web platform and infrastructure for an amateur radio station with hand-drawn ui',
+		ruDescription: 'стриминг-платформа и инфраструктура для любительской радиостанции с интерфейсом, нарисованным от руки',
 		href: 'https://radioznb.ru',
 	},
 ]
@@ -64,13 +64,22 @@ const ProjectLine = ({ project, language }: { project: Project, language: Langua
 	</>
 )
 
+const CommandLine = ({ prompt, command }: { prompt: string, command: string }) => (
+	<p className='relative whitespace-pre-wrap break-all'>
+		<span className='absolute left-0 top-0'>{prompt}</span>
+		<span style={{ textIndent: `${prompt.length + 1}ch` }} className='block'>
+			{command}
+		</span>
+	</p>
+)
+
 const projectDetails = (language: Language) =>
 	projects.map((project) => <ProjectLine key={project.name} project={project} language={language} />)
 
 const contactOutput = (language: Language) => [
 	language === 'en'
-		? 'available for hire: software development of any complexity, web apps, landing pages'
-		: 'доступны для работы: разработка ПО, сайты, задачи любой сложности',
+		? 'available for hire: custom software development, web apps, telegram bots, landing pages and internal tools'
+		: 'доступны для работы: разработка ПО, веб-приложения, телеграм-боты, лендинги и внутренние инструменты',
 	<span key='email'>
 		<span className='whitespace-pre'>  * email     </span>
 		<Link href='mailto:mkevrthng@gmail.com' className={linkClass}>
@@ -121,8 +130,8 @@ const mailOutput = (language: Language) => [
 
 const whoamiOutput = (language: Language) =>
 	language === 'en'
-		? 'we are indie developers building web apps, telegram bots, landing pages and ready to do pretty much any kind of software'
-		: 'мы инди-команда разработчиков: делаем веб-приложения, телеграм-ботов, лендинги и софт любой сложности'
+		? 'we are an indie software development team building fast web apps, telegram bots, landing pages, internal tools and custom software for businesses'
+		: 'мы инди-команда разработки ПО: делаем быстрые веб-приложения, телеграм-ботов, лендинги, внутренние инструменты и софт для бизнеса'
 
 const rootListing = () => 'home'
 const homeRootListing = () => 'mkeverything'
@@ -171,7 +180,7 @@ const App = () => {
 	const [commandHistoryIndex, setCommandHistoryIndex] = useState<number | null>(null)
 	const [isSending, setIsSending] = useState(false)
 	const [isCleared, setIsCleared] = useState(false)
-	const inputRef = useRef<HTMLInputElement>(null)
+	const inputRef = useRef<HTMLTextAreaElement>(null)
 	const nextLineId = useRef(0)
 	const contactFile = contactFileFor(language)
 	const workDir = workDirFor(language)
@@ -258,6 +267,17 @@ const App = () => {
 	useEffect(() => {
 		focusInput()
 	}, [isSending])
+
+	useLayoutEffect(() => {
+		const input = inputRef.current
+
+		if (!input) {
+			return
+		}
+
+		input.style.height = 'auto'
+		input.style.height = `${input.scrollHeight}px`
+	}, [command])
 
 	useEffect(() => {
 		const focusOnKeyDown = (event: KeyboardEvent) => {
@@ -421,9 +441,9 @@ const App = () => {
 	const runCommand = (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault()
 
-		const value = command.trim()
+		const value = command.replace(/\s*\n\s*/g, ' ').trim()
 		const [name, ...args] = value.split(/\s+/)
-		addHistory(`${prompt} ${value}`)
+		addHistory(<CommandLine prompt={prompt} command={value} />)
 		setCommand('')
 		setCommandHistoryIndex(null)
 
@@ -516,7 +536,13 @@ const App = () => {
 		setCommand(commandHistory[nextIndex])
 	}
 
-	const handleCommandKeyDown = (event: ReactKeyboardEvent<HTMLInputElement>) => {
+	const handleCommandKeyDown = (event: ReactKeyboardEvent<HTMLTextAreaElement>) => {
+		if (event.key === 'Enter' && !event.shiftKey) {
+			event.preventDefault()
+			event.currentTarget.form?.requestSubmit()
+			return
+		}
+
 		if (event.key !== 'ArrowUp' && event.key !== 'ArrowDown') {
 			return
 		}
@@ -527,7 +553,8 @@ const App = () => {
 
 	return (
 		<main className='min-h-[100dvh] w-full bg-background pl-2 text-foreground font-mono'>
-			<section className='w-full max-w-4xl space-y-5 text-sm sm:text-base leading-relaxed'>
+			<h1 className='sr-only'>mkeverything — custom web apps, telegram bots, landing pages and software development</h1>
+			<section aria-label='terminal-style company profile' className='w-full max-w-4xl space-y-5 text-sm sm:text-base leading-relaxed'>
 				{!isCleared && (
 					<>
 						<div>
@@ -567,17 +594,16 @@ const App = () => {
 
 				<div>
 					{history.map((line) => (
-						<p key={line.id}>{typeof line.content === 'function' ? line.content(language) : line.content}</p>
+						<div key={line.id}>{typeof line.content === 'function' ? line.content(language) : line.content}</div>
 					))}
 					{!isSending && (
-						<form onSubmit={runCommand} className='flex items-center gap-2'>
-							<label htmlFor='command' className='shrink-0'>
+						<form onSubmit={runCommand} className='relative'>
+							<label htmlFor='command' className='pointer-events-none absolute left-0 top-0'>
 								{prompt}
 							</label>
-							<input
+							<textarea
 								ref={inputRef}
 								id='command'
-								type='text'
 								value={command}
 								onChange={(event) => {
 									setCommand(event.target.value)
@@ -585,8 +611,13 @@ const App = () => {
 								}}
 								onKeyDown={handleCommandKeyDown}
 								autoComplete='off'
+								autoCapitalize='off'
+								autoCorrect='off'
+								spellCheck={false}
+								rows={1}
 								name='terminal-input'
-								className='min-w-0 flex-1 bg-transparent outline-none caret-foreground [caret-shape:block]'
+								style={{ textIndent: `${prompt.length + 1}ch` }}
+								className='block w-full resize-none overflow-hidden bg-transparent outline-none caret-foreground [caret-shape:block] whitespace-pre-wrap break-all'
 							/>
 						</form>
 					)}

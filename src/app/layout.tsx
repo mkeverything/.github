@@ -1,17 +1,20 @@
 import type { Metadata, Viewport } from 'next'
 import '../styles/globals.css'
 
-const siteUrl = 'https://mkeverything.org'
+const siteUrl = 'https://mkeverything.com'
 const siteName = 'mkeverything'
-const title = 'mkeverything — indie software development team'
-const description = 'indie software development team building web apps, telegram bots, landing pages, internal tools, and custom software'
+const title = 'mkeverything — custom web apps, bots and landing pages'
+const description = 'indie software development team building custom web apps, telegram bots, landing pages, internal tools and software for businesses'
 
 const structuredData = {
 	'@context': 'https://schema.org',
-	'@type': 'Organization',
+	'@type': 'ProfessionalService',
 	name: siteName,
 	url: siteUrl,
 	email: 'mkevrthng@gmail.com',
+	description,
+	areaServed: 'Worldwide',
+	availableLanguage: ['en', 'ru'],
 	sameAs: [
 		'https://github.com/mkeverything',
 		'https://t.me/mkevrthng',
@@ -22,6 +25,11 @@ const structuredData = {
 		'landing pages',
 		'internal tools',
 		'custom software development',
+	],
+	makesOffer: [
+		{ '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Custom web application development' } },
+		{ '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Telegram bot development' } },
+		{ '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Landing page development' } },
 	],
 }
 
@@ -54,12 +62,12 @@ export const metadata: Metadata = {
 		'mkeverything',
 		'make everything',
 		'indie developers',
-		'software development',
-		'web apps',
-		'telegram bots',
-		'landing pages',
+		'software development team',
+		'custom software development',
+		'web application development',
+		'telegram bot development',
+		'landing page development',
 		'internal tools',
-		'custom software',
 	],
 	applicationName: siteName,
 	creator: siteName,
@@ -75,6 +83,7 @@ export const metadata: Metadata = {
 		title,
 		description,
 		locale: 'en_US',
+		alternateLocale: ['ru_RU'],
 	},
 	twitter: {
 		card: 'summary',
