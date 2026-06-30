@@ -1,10 +1,19 @@
 import type { Metadata, Viewport } from 'next'
 import '../styles/globals.css'
 
-const siteUrl = 'https://mkeverything.com'
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://mkeverything.com'
+const siteLanguage = siteUrl.endsWith('.ru') ? 'ru' : 'en'
 const siteName = 'mkeverything'
-const title = 'mkeverything — custom web apps, bots and landing pages'
-const description = 'indie software development team building custom web apps, telegram bots, landing pages, internal tools and software for businesses'
+const title = siteLanguage === 'ru'
+	? 'mkeverything — веб-приложения, боты, лендинги и многое другое'
+	: 'mkeverything — custom web apps, bots, landing pages and many more'
+const description = siteLanguage === 'ru'
+	? 'инди-команда разработчиков: делаем веб-приложения, телеграм-ботов, лендинги, внутренние инструменты и софт для бизнеса'
+	: 'indie software development team building custom web apps, telegram bots, landing pages, internal tools and software for businesses'
+const alternateLanguages = {
+	en: 'https://mkeverything.com',
+	ru: 'https://mkeverything.ru',
+}
 
 const structuredData = {
 	'@context': 'https://schema.org',
@@ -15,6 +24,7 @@ const structuredData = {
 	description,
 	areaServed: 'Worldwide',
 	availableLanguage: ['en', 'ru'],
+	inLanguage: siteLanguage,
 	sameAs: [
 		'https://github.com/mkeverything',
 		'https://t.me/mkevrthng',
@@ -39,7 +49,7 @@ export default function RootLayout({
 	children: React.ReactNode
 }>) {
 	return (
-		<html lang='en'>
+		<html lang={siteLanguage}>
 			<body>
 				{children}
 				<script
@@ -59,6 +69,7 @@ export const metadata: Metadata = {
 	},
 	description,
 	keywords: [
+		'mkevrthng',
 		'mkeverything',
 		'make everything',
 		'indie developers',
@@ -74,16 +85,21 @@ export const metadata: Metadata = {
 	publisher: siteName,
 	category: 'software development',
 	alternates: {
-		canonical: '/',
+		canonical: siteUrl,
+		languages: {
+			en: alternateLanguages.en,
+			ru: alternateLanguages.ru,
+			'x-default': alternateLanguages.en,
+		},
 	},
 	openGraph: {
 		type: 'website',
-		url: '/',
+		url: siteUrl,
 		siteName,
 		title,
 		description,
-		locale: 'en_US',
-		alternateLocale: ['ru_RU'],
+		locale: siteLanguage === 'ru' ? 'ru_RU' : 'en_US',
+		alternateLocale: [siteLanguage === 'ru' ? 'en_US' : 'ru_RU'],
 	},
 	twitter: {
 		card: 'summary',

@@ -16,6 +16,8 @@ const linkClass = 'underline underline-offset-4 hover:opacity-50 transition-opac
 type Language = 'en' | 'ru'
 type Path = typeof rootPath | typeof homeRootPath | typeof homePath | `~/${string}`
 
+const buildLanguage: Language = process.env.NEXT_PUBLIC_DEFAULT_LANGUAGE === 'ru' || process.env.NEXT_PUBLIC_SITE_URL?.endsWith('.ru') ? 'ru' : 'en'
+
 type TranslatedContent = (language: Language) => ReactNode
 
 type HistoryLineContent = ReactNode | TranslatedContent
@@ -79,7 +81,7 @@ const projectDetails = (language: Language) =>
 const contactOutput = (language: Language) => [
 	language === 'en'
 		? 'available for hire: custom software development, web apps, telegram bots, landing pages and internal tools'
-		: 'доступны для работы: разработка ПО, веб-приложения, телеграм-боты, лендинги и внутренние инструменты',
+		: 'открыты к предложениям: от сайтов-визиток до разработки ПО любой сложности под ваши задачи',
 	<span key='email'>
 		<span className='whitespace-pre'>  * email     </span>
 		<Link href='mailto:mkevrthng@gmail.com' className={linkClass}>
@@ -131,7 +133,7 @@ const mailOutput = (language: Language) => [
 const whoamiOutput = (language: Language) =>
 	language === 'en'
 		? 'we are an indie software development team building fast web apps, telegram bots, landing pages, internal tools and custom software for businesses'
-		: 'мы инди-команда разработки ПО: делаем быстрые веб-приложения, телеграм-ботов, лендинги, внутренние инструменты и софт для бизнеса'
+		: 'мы инди-команда разработчиков: делаем быстрые веб-приложения, телеграм-ботов, лендинги, внутренние инструменты и софт для бизнеса'
 
 const rootListing = () => 'home'
 const homeRootListing = () => 'mkeverything'
@@ -151,10 +153,17 @@ const contactError = (data: unknown) => {
 
 const contactSent = (data: unknown) => isObject(data) && data.ok === true
 
-const defaultLanguage = () => 'en' as const
+const defaultLanguage = () => buildLanguage
 
-const storedLanguage = (): Language =>
-	window.localStorage.getItem(languageStorageKey) === 'ru' ? 'ru' : 'en'
+const storedLanguage = (): Language => {
+	const language = window.localStorage.getItem(languageStorageKey)
+
+	if (language === 'en' || language === 'ru') {
+		return language
+	}
+
+	return buildLanguage
+}
 
 const subscribeToLanguage = (onStoreChange: () => void) => {
 	window.addEventListener('storage', onStoreChange)
@@ -562,7 +571,11 @@ const App = () => {
 
 	return (
 		<main className='min-h-[100dvh] w-full bg-background pl-2 text-foreground font-mono'>
-			<h1 className='sr-only'>mkeverything — custom web apps, telegram bots, landing pages and software development</h1>
+			<h1 className='sr-only'>
+				{language === 'en'
+					? 'mkeverything — indie software developers building custom web apps, telegram bots, landing pages and various custom software'
+					: 'mkeverything — веб-приложения, телеграм-боты, лендинги и разработка ПО'}
+			</h1>
 			<section aria-label='terminal-style company profile' className='w-full max-w-4xl space-y-5 text-sm sm:text-base leading-relaxed'>
 				{!isCleared && (
 					<>

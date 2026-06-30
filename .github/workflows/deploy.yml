@@ -31,6 +31,9 @@ jobs:
 
       - name: build with next.js
         run: bun run build
+        env:
+          NEXT_PUBLIC_SITE_URL: https://mkeverything.ru
+          NEXT_PUBLIC_DEFAULT_LANGUAGE: ru
 
       - name: upload artifact
         uses: actions/upload-pages-artifact@v3
