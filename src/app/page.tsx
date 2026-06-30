@@ -121,11 +121,6 @@ const mailOutput = (language: Language) => [
 
 const whoamiOutput = (language: Language) =>
 	language === 'en'
-		? 'developers building web apps, internal tools, and public websites'
-		: 'мы инди-команда разработчиков: делаем веб-приложения, телеграм-ботов, лендинги и софт любой сложности'
-
-const introWhoamiOutput = (language: Language) =>
-	language === 'en'
 		? 'we are indie developers building web apps, telegram bots, landing pages and ready to do pretty much any kind of software'
 		: 'мы инди-команда разработчиков: делаем веб-приложения, телеграм-ботов, лендинги и софт любой сложности'
 
@@ -539,7 +534,7 @@ const App = () => {
 
 						<div>
 							<p>{initialPrompt} whoami</p>
-							<p>{introWhoamiOutput(language)}</p>
+							<p>{whoamiOutput(language)}</p>
 						</div>
 
 						<div>
