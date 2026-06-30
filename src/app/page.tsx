@@ -315,8 +315,8 @@ const App = () => {
 			}
 
 			addLocalizedHistory(
-				<span><span className='text-emerald-400'>sent</span> — we got your email and will reach out soon</span>,
-				<span><span className='text-emerald-400'>отправлено</span> — мы получили ваш адрес и скоро напишем</span>,
+				<span>sent — we got your email and will reach out soon</span>,
+				<span>отправлено — мы получили ваш адрес и скоро напишем</span>,
 			)
 		} catch {
 			addHistory((nextLanguage) => (
