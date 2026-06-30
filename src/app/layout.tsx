@@ -1,5 +1,4 @@
 import type { Metadata } from 'next'
-import localFont from 'next/font/local'
 import '../styles/globals.css'
 
 export default function RootLayout({
@@ -9,15 +8,10 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang='en'>
-			<body className={`${TurboPascal.className} antialiased`}>{children}</body>
+			<body>{children}</body>
 		</html>
 	)
 }
-
-const TurboPascal = localFont({
-	src: '../styles/fonts/TurboPascal/TurboPascalFont.ttf',
-	display: 'swap',
-})
 
 export const metadata: Metadata = {
 	title: 'mkeverything',
